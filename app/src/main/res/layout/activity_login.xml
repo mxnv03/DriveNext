@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="342dp"
+                android:layout_height="32dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Войдите в аккаунт"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="342dp"
+                android:layout_height="24dp"
+                android:fontFamily="@font/montserrat_light"
+                android:text="Пожалуйста, введите свои данные"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <!-- LinearLayout для ввода данных -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="348dp"
+            android:orientation="vertical"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="64dp" >
+
+            <!-- Поле для ввода электронной почты -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:fontFamily="@font/montserrat_light"
+                    android:text="Электронная почта"
+                    android:textAlignment="textStart"
+                    android:textColor="#404040"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"
+                    />
+
+                <EditText
+                    android:id="@+id/editTextText"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@drawable/rounded_button_white_login"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat_light"
+                    android:inputType="text"
+                    android:hint="Введите электронную почту"
+                    android:textAlignment="textStart"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Поле для ввода пароля с иконкой -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:fontFamily="@font/montserrat_light"
+                    android:text="Пароль"
+                    android:textAlignment="textStart"
+                    android:textColor="#404040"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp">
+
+                    <EditText
+                        android:id="@+id/editTextText1"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/rounded_button_white_login"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat_light"
+                        android:inputType="text"
+                        android:hint="Введите пароль"
+                        android:textAlignment="textStart"
+                        android:textSize="14sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/hide_pass"
+                        app:layout_constraintTop_toTopOf="@id/editTextText1"
+                        app:layout_constraintEnd_toEndOf="@id/editTextText1"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="12dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <!-- Ссылка на забытый пароль -->
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_light"
+                android:text="Забыли пароль?"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:textAlignment="center"
+                android:textColor="#2A1246" />
+
+            <LinearLayout
+                android:id="@+id/button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_button_small_radius"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/button_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:text="Войти"
+                    android:textAlignment="viewStart"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Кнопка "Войти через Google" -->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="68dp">
+
+                <LinearLayout
+                    android:id="@+id/button_layout2"
+                    android:layout_width="342dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_button_white_login"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints">
+
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="12dp"
+                        app:srcCompat="@drawable/google_icon" />
+
+                    <TextView
+                        android:id="@+id/button_text2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_light"
+                        android:text="Войти через Google"
+                        android:textAlignment="viewStart"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+        <!-- Ссылка на регистрацию -->
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_light"
+            android:text="Зарегистрироваться"
+            android:textAlignment="center"
+            android:textColor="#2A1246"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
