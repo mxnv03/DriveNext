@@ -8,6 +8,10 @@ import android.text.InputType
 import android.util.Patterns
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.ViewModelProvider
+
+import com.example.drivenext.viewmodel.UserViewModel
+import com.example.drivenext.data.User
 
 class RegistationFirst : BaseActivity() {
     private lateinit var emailField: EditText
@@ -19,6 +23,7 @@ class RegistationFirst : BaseActivity() {
     private lateinit var backButton: ImageView
     private lateinit var errorText: TextView
     private lateinit var checkBox: CheckBox
+    private lateinit var userViewModel: UserViewModel
 
     private var isPasswordVisible_1 = false
     private var isPasswordVisible_2 = false
@@ -41,6 +46,7 @@ class RegistationFirst : BaseActivity() {
         checkBox = findViewById(R.id.checkBox2)
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         fun validateEmail() {
             val email = emailField.text.toString().trim()
@@ -93,7 +99,25 @@ class RegistationFirst : BaseActivity() {
             validateEmail()
 
             if (validateInput(email, password_1, password_2)) {
-                saveUserData(email, password_1)
+                saveUserData(email)
+                // Создание пользователя
+                val user = User(
+                    firstName = "",
+                    lastName = "",
+                    patronymic = "",
+                    driverLicense = "",
+                    email = email,
+                    dateOfBirth = "",
+                    password = password_1,
+                    sex = "",
+                    registration_date = ""
+                )
+                userViewModel.insertUser(user) { userId ->  // <-- Передаём callback
+                    val intent = Intent(this, RegistationSecond::class.java)
+                    intent.putExtra("USER_ID", userId) // Передаём userId
+                    startActivity(intent)
+                    finish()
+                }
                 startActivity(Intent(this, RegistationSecond::class.java)) // Переход на главную страницу
                 finish()
             }
@@ -151,10 +175,9 @@ class RegistationFirst : BaseActivity() {
         return true
     }
 
-    private fun saveUserData(email: String, password: String) {
+    private fun saveUserData(email: String) {
         val editor = sharedPreferences.edit()
         editor.putString("email", email)
-        editor.putString("password", password)
         editor.apply()
     }
 

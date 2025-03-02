@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.app.DatePickerDialog
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import java.util.Calendar
+
+import com.example.drivenext.viewmodel.UserViewModel
+import com.example.drivenext.data.User
 
 class RegistationSecond : BaseActivity() {
     private lateinit var nextButton: LinearLayout
@@ -24,10 +27,16 @@ class RegistationSecond : BaseActivity() {
     private lateinit var errorTextDate: TextView
 
     private lateinit var calendarIcon: ImageView
+    private lateinit var userViewModel: UserViewModel
+    private var userId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.registration_second_step)
+
+        // Получаем userId из предыдущего экрана
+        userId = intent.getLongExtra("USER_ID", -1)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         // Инициализация элементов
         nextButton = findViewById(R.id.button_layout)
@@ -44,16 +53,38 @@ class RegistationSecond : BaseActivity() {
 
         calendarIcon = findViewById(R.id.calendarIcon)
 
-        // Обработка нажатия на кнопку "Далее"
-        nextButton.setOnClickListener {
-            val surname = surnameInput.text.toString()
-            val name = nameInput.text.toString()
-            val patronic = patronicInput.text.toString()
-            val birth_date = dateInput.text.toString()
+        // Загружаем пользователя, если ID корректный
+        if (userId != -1L) {
+            userViewModel.getUserById(userId).observe(this) { user: User? ->
+                user?.let {
+                    nextButton.setOnClickListener {
+                        val surname = surnameInput.text.toString()
+                        val name = nameInput.text.toString()
+                        val patronic = patronicInput.text.toString()
+                        val birthDate = dateInput.text.toString()
 
-            if (validateInput(surname, name, patronic, birth_date)) {
-                startActivity(Intent(this, RegistationThird::class.java))
-                finish()
+                        if (validateInput(surname, name, patronic, birthDate)) {
+                            val updatedUser = User(
+                                id = user.id,  // ID не меняем
+                                firstName = name,
+                                lastName = surname,
+                                patronymic = patronic,
+                                dateOfBirth = birthDate,
+                                email = user.email,
+                                password = user.password,
+                                driverLicense = "",
+                                sex =  "male",
+                                registration_date = ""
+                            )
+
+                            userViewModel.updateUser(updatedUser)
+                            val intent =Intent(this, RegistationThird::class.java)
+                            intent.putExtra("USER_ID", userId) // Передаём userId
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                }
             }
         }
 

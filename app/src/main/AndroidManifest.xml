@@ -25,6 +25,8 @@
         <activity android:name=".RegistationFirst" android:exported="true"/>
         <activity android:name=".RegistationSecond" android:exported="true"/>
         <activity android:name=".RegistationThird" android:exported="true"/>
+        <activity android:name=".SettingsActivity" android:exported="true"/>
+        <activity android:name=".AccountActivity" android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

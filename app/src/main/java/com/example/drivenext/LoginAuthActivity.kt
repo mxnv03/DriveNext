@@ -3,9 +3,17 @@ package com.example.drivenext
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.content.SharedPreferences
 
 class LoginAuthActivity : BaseActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
+        // запоминаем что прошли онбординг
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("onboarding", true)
+        editor.apply()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_and_auth)
         val buttonLogin = findViewById<LinearLayout>(R.id.button_layout)

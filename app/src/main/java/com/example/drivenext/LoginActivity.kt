@@ -5,6 +5,12 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Patterns
 import android.widget.*
+import androidx.activity.viewModels
+import com.example.drivenext.data.AppDatabase
+import com.example.drivenext.repository.UserRepository
+import com.example.drivenext.viewmodel.UserViewModel
+import com.example.drivenext.data.User
+import androidx.lifecycle.Observer
 
 class LoginActivity : BaseActivity() {
     private lateinit var emailField: EditText
@@ -16,6 +22,7 @@ class LoginActivity : BaseActivity() {
     private lateinit var registerText: TextView
 
     private var isPasswordVisible = false
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +59,23 @@ class LoginActivity : BaseActivity() {
             val password = passwordField.text.toString()
 
             if (validateInput(email, password)) {
-                startActivity(Intent(this, Congratulations::class.java)) // Переход на главную страницу
-                finish()
+                // Проверка пользователя по email
+                userViewModel.getUserByEmail(email).observe(this, Observer { user ->
+                    if (user != null) {
+                        // Если пользователь найден, проверяем пароль
+                        if (user.password == password) {
+                            // Пароли совпадают, авторизуем пользователя
+                            startActivity(Intent(this, Congratulations::class.java)) // Переход на главный экран
+                            finish()
+                        } else {
+                            // Пароль неверный
+                            Toast.makeText(this, "Неверный пароль", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // Пользователь не найден
+                        Toast.makeText(this, "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
         }
 
@@ -94,4 +116,21 @@ class LoginActivity : BaseActivity() {
 
         return true
     }
+
+    private fun checkLoginCredentials(email: String, password: String) {
+        userViewModel.getUserByEmail(email).observe(this, Observer { user ->
+            if (user != null) {
+                // Сравниваем пароли
+                if (user.password == password) {
+                    startActivity(Intent(this, Congratulations::class.java)) // Переход на главную страницу
+                    finish()
+                } else {
+                    Toast.makeText(this, "Неверный пароль", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Пользователь с таким email не найден", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 }

@@ -11,7 +11,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.ViewModelProvider
 import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.*
+
+import com.example.drivenext.viewmodel.UserViewModel
+import com.example.drivenext.data.User
 
 class RegistationThird : BaseActivity() {
     private lateinit var nextButton: LinearLayout
@@ -24,6 +30,10 @@ class RegistationThird : BaseActivity() {
 
     private lateinit var calendarIcon: ImageView
 
+    private lateinit var userViewModel: UserViewModel
+    private var userId: Long = -1 // id пользователя
+
+    // фото
     private lateinit var userPhoto: ImageView
     private lateinit var pravaPhoto: FrameLayout
     private lateinit var passportPhoto: FrameLayout
@@ -46,6 +56,11 @@ class RegistationThird : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.registration_third_step)
 
+        // Получаем userId из предыдущего экрана
+        userId = intent.getLongExtra("USER_ID", -1)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        // Инициализация элементов
         nextButton = findViewById(R.id.button_layout)
         backButton = findViewById(R.id.backButton)
         errorTextPrava = findViewById(R.id.errorTextPrava)
@@ -81,13 +96,32 @@ class RegistationThird : BaseActivity() {
             showPhotoOptions()
         }
 
-        nextButton.setOnClickListener {
-            val prava = pravaInput.text.toString()
-            val datePrava = dateInput.text.toString()
+        if (userId != -1L) {
+            userViewModel.getUserById(userId).observe(this) { user: User? ->
+                user?.let {
+                    nextButton.setOnClickListener {
+                        val prava = pravaInput.text.toString()
+                        val datePrava = dateInput.text.toString()
 
-            if (validateInput(prava, datePrava)) {
-                startActivity(Intent(this, Congratulations::class.java))
-                finish()
+                        if (validateInput(prava, datePrava)) {
+                            val updatedUser = User(
+                                id = user.id,
+                                firstName = user.firstName,
+                                lastName = user.lastName,
+                                patronymic = user.patronymic,
+                                dateOfBirth = user.dateOfBirth,
+                                email = user.email,
+                                password = user.password,
+                                driverLicense = prava,
+                                sex = user.sex,
+                                registration_date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                            )
+                            userViewModel.updateUser(updatedUser)
+                            startActivity(Intent(this, Congratulations::class.java))
+                            finish()
+                        }
+                    }
+                }
             }
         }
 
