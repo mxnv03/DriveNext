@@ -45,7 +45,7 @@
         app:srcCompat="@drawable/avatar" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/plusic"
         android:layout_width="20dp"
         android:layout_height="19dp"
         app:layout_constraintBottom_toBottomOf="@+id/addAvatar"
@@ -70,7 +70,7 @@
 
 
     <TextView
-        android:id="@+id/textView23"
+        android:id="@+id/dateJoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -87,12 +87,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="68dp"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/Menu"
-        app:layout_constraintTop_toBottomOf="@+id/textView23"
+        app:layout_constraintTop_toBottomOf="@+id/dateJoin"
         app:layout_constraintVertical_bias="0.051"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="16dp">
 
         <!-- Контейнер: Почта -->
         <LinearLayout
@@ -110,6 +111,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/mail_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_light"
@@ -168,6 +170,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/male_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_light"
@@ -214,6 +217,7 @@
 
         <!-- Контейнер: Выйти из профиля -->
         <LinearLayout
+            android:id="@+id/login_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -275,7 +279,7 @@
             android:layout_height="24dp"
             android:layout_weight="1"
             android:contentDescription="Профиль"
-            android:src="@drawable/settings" />
+            android:src="@drawable/settings_pressed" />
     </LinearLayout>
     <View
         android:id="@+id/probel"

@@ -110,11 +110,15 @@ class RegistationFirst : BaseActivity() {
                     dateOfBirth = "",
                     password = password_1,
                     sex = "",
-                    registration_date = ""
+                    registration_date = "",
+                    photo_url = "",
                 )
                 userViewModel.insertUser(user) { userId ->  // <-- Передаём callback
                     val intent = Intent(this, RegistationSecond::class.java)
                     intent.putExtra("USER_ID", userId) // Передаём userId
+                    val editor = sharedPreferences.edit()
+                    editor.putLong("user_id", userId)
+                    editor.apply()
                     startActivity(intent)
                     finish()
                 }

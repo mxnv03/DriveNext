@@ -74,7 +74,8 @@ class RegistationSecond : BaseActivity() {
                                 password = user.password,
                                 driverLicense = "",
                                 sex =  "male",
-                                registration_date = ""
+                                registration_date = "",
+                                photo_url = "",
                             )
 
                             userViewModel.updateUser(updatedUser)

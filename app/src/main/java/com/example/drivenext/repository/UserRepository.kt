@@ -18,6 +18,10 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getUserByEmail(email)
     }
 
+    fun getPhotoByEmail(email: String): LiveData<String> {
+        return userDao.getPhotoByEmail(email)
+    }
+
     fun getUserById(userId: Long): LiveData<User> {
         return userDao.getUserById(userId)
     }

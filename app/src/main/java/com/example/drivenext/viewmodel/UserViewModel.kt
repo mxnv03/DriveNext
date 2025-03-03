@@ -3,7 +3,6 @@ package com.example.drivenext.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.drivenext.data.AppDatabase
 import com.example.drivenext.repository.UserRepository
@@ -28,6 +27,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getUserById(userId: Long): LiveData<User> {
         return userRepository.getUserById(userId)
+    }
+
+    fun getPhotoByEmail(email: String): LiveData<String> {
+        return userRepository.getPhotoByEmail(email)
     }
 
     fun updateUser(user: User) {

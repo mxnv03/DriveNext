@@ -18,6 +18,8 @@ import java.util.*
 
 import com.example.drivenext.viewmodel.UserViewModel
 import com.example.drivenext.data.User
+import java.io.File
+import java.io.FileOutputStream
 
 class RegistationThird : BaseActivity() {
     private lateinit var nextButton: LinearLayout
@@ -42,6 +44,7 @@ class RegistationThird : BaseActivity() {
     private lateinit var passportImageView: ImageView
 
     private var currentPhotoType: Int = 0
+    private var photoUrl: String = "" // Сохраняем ссылку на фото профиля
 
     companion object {
         private const val REQUEST_TAKE_PHOTO = 0
@@ -70,7 +73,6 @@ class RegistationThird : BaseActivity() {
         dateInput = findViewById(R.id.dateInput)
 
         calendarIcon = findViewById(R.id.calendarIcon)
-
         userPhoto = findViewById(R.id.addAvatar)
         pravaPhoto = findViewById(R.id.add_prava_photo)
         passportPhoto = findViewById(R.id.add_passport_photo)
@@ -114,7 +116,8 @@ class RegistationThird : BaseActivity() {
                                 password = user.password,
                                 driverLicense = prava,
                                 sex = user.sex,
-                                registration_date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                                registration_date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                                photo_url = photoUrl // Сохраняем ссылку на аватар
                             )
                             userViewModel.updateUser(updatedUser)
                             startActivity(Intent(this, Congratulations::class.java))
@@ -161,7 +164,6 @@ class RegistationThird : BaseActivity() {
         })
     }
 
-
     // Отображение выбора источника фото (галерея или камера)
     private fun showPhotoOptions() {
         val options = arrayOf("Выбрать из галереи", "Сделать фото")
@@ -188,9 +190,7 @@ class RegistationThird : BaseActivity() {
     // Сделать фото камерой
     private fun takePhoto() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivityForResult(intent, REQUEST_TAKE_PHOTO)
-        }
+        startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 
     // Обработка выбора фото
@@ -202,6 +202,14 @@ class RegistationThird : BaseActivity() {
                 REQUEST_SELECT_IMAGE_IN_ALBUM -> {
                     val selectedImageUri: Uri? = data?.data
                     if (selectedImageUri != null) {
+                        when (currentPhotoType) {
+                            TYPE_AVATAR -> {
+                                userPhoto.setImageURI(selectedImageUri)
+                                saveUserPhoto(selectedImageUri.toString()) // Сохраняем только фото профиля
+                            }
+                            TYPE_PRAVA -> pravaImageView.setImageURI(selectedImageUri) // Не сохраняем
+                            TYPE_PASSPORT -> passportImageView.setImageURI(selectedImageUri) // Не сохраняем
+                        }
                         Toast.makeText(this, "Снимок загружен", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show()
@@ -211,6 +219,14 @@ class RegistationThird : BaseActivity() {
                 REQUEST_TAKE_PHOTO -> {
                     val photo: Bitmap? = data?.extras?.get("data") as? Bitmap
                     if (photo != null) {
+                        when (currentPhotoType) {
+                            TYPE_AVATAR -> {
+                                userPhoto.setImageBitmap(photo)
+                                saveUserPhoto(saveBitmapToInternalStorage(photo)) // Сохраняем только фото профиля
+                            }
+                            TYPE_PRAVA -> pravaImageView.setImageBitmap(photo) // Не сохраняем
+                            TYPE_PASSPORT -> passportImageView.setImageBitmap(photo) // Не сохраняем
+                        }
                         Toast.makeText(this, "Снимок загружен", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Ошибка снимка", Toast.LENGTH_SHORT).show()
@@ -218,6 +234,28 @@ class RegistationThird : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun saveUserPhoto(photoUri: String) {
+        if (userId != -1L) {
+            userViewModel.getUserById(userId).observe(this) { user: User? ->
+                user?.let {
+                    val updatedUser = user.copy(photo_url = photoUri)
+                    userViewModel.updateUser(updatedUser)
+                }
+            }
+        }
+    }
+
+    private fun saveBitmapToInternalStorage(bitmap: Bitmap): String {
+        val filename = "avatar_${System.currentTimeMillis()}.jpg"
+        val file = File(filesDir, filename)
+
+        FileOutputStream(file).use { fos ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)
+        }
+
+        return file.absolutePath
     }
 
     @SuppressLint("DefaultLocale")

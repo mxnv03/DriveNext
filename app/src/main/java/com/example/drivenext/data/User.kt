@@ -15,4 +15,5 @@ data class User(
     val password: String,
     val sex: String,
     val registration_date: String,
+    val photo_url: String,
 )

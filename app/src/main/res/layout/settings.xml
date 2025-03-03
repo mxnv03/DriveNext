@@ -324,7 +324,7 @@
             android:layout_height="24dp"
             android:layout_weight="1"
             android:contentDescription="Профиль"
-            android:src="@drawable/settings" />
+            android:src="@drawable/settings_pressed" />
     </LinearLayout>
 
     <View

@@ -10,7 +10,7 @@ class Congratulations : BaseActivity() {
         setContentView(R.layout.activity_congrulations)
         val buttonNext = findViewById<LinearLayout>(R.id.button_layout)
         buttonNext.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
     }
