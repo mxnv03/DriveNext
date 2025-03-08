@@ -2,24 +2,27 @@ package com.example.drivenext
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import java.util.Calendar
-import java.text.SimpleDateFormat
-import java.util.*
-
-import com.example.drivenext.viewmodel.UserViewModel
+import com.bumptech.glide.Glide
 import com.example.drivenext.data.User
+import com.example.drivenext.viewmodel.UserViewModel
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RegistationThird : BaseActivity() {
     private lateinit var nextButton: LinearLayout
@@ -47,7 +50,6 @@ class RegistationThird : BaseActivity() {
     private var photoUrl: String = "" // Сохраняем ссылку на фото профиля
 
     companion object {
-        private const val REQUEST_TAKE_PHOTO = 0
         private const val REQUEST_SELECT_IMAGE_IN_ALBUM = 1
 
         private const val TYPE_AVATAR = 100
@@ -164,15 +166,14 @@ class RegistationThird : BaseActivity() {
         })
     }
 
-    // Отображение выбора источника фото (галерея или камера)
+    // Отображение выбора источника фото (галерея)
     private fun showPhotoOptions() {
-        val options = arrayOf("Выбрать из галереи", "Сделать фото")
+        val options = arrayOf("Выбрать из галереи")
         val builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("Выберите действие")
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> selectImageInAlbum()
-                1 -> takePhoto()
             }
         }
         builder.show()
@@ -187,75 +188,148 @@ class RegistationThird : BaseActivity() {
         }
     }
 
-    // Сделать фото камерой
-    private fun takePhoto() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, REQUEST_TAKE_PHOTO)
-    }
-
     // Обработка выбора фото
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 REQUEST_SELECT_IMAGE_IN_ALBUM -> {
-                    val selectedImageUri: Uri? = data?.data
-                    if (selectedImageUri != null) {
-                        when (currentPhotoType) {
-                            TYPE_AVATAR -> {
-                                userPhoto.setImageURI(selectedImageUri)
-                                saveUserPhoto(selectedImageUri.toString()) // Сохраняем только фото профиля
-                            }
-                            TYPE_PRAVA -> pravaImageView.setImageURI(selectedImageUri) // Не сохраняем
-                            TYPE_PASSPORT -> passportImageView.setImageURI(selectedImageUri) // Не сохраняем
-                        }
-                        Toast.makeText(this, "Снимок загружен", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                REQUEST_TAKE_PHOTO -> {
-                    val photo: Bitmap? = data?.extras?.get("data") as? Bitmap
-                    if (photo != null) {
-                        when (currentPhotoType) {
-                            TYPE_AVATAR -> {
-                                userPhoto.setImageBitmap(photo)
-                                saveUserPhoto(saveBitmapToInternalStorage(photo)) // Сохраняем только фото профиля
-                            }
-                            TYPE_PRAVA -> pravaImageView.setImageBitmap(photo) // Не сохраняем
-                            TYPE_PASSPORT -> passportImageView.setImageBitmap(photo) // Не сохраняем
-                        }
-                        Toast.makeText(this, "Снимок загружен", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Ошибка снимка", Toast.LENGTH_SHORT).show()
-                    }
+                    val imageUri: Uri? = data?.data // Извлекаем Uri из Intent
+                    handleImageSelection(imageUri)
                 }
             }
         }
     }
 
-    private fun saveUserPhoto(photoUri: String) {
+    private fun handleImageSelection(uri: Uri?) {
+        if (uri != null) {
+            when (currentPhotoType) {
+                TYPE_AVATAR -> uploadImageToServer(uri)
+                TYPE_PRAVA -> pravaImageView.setImageURI(uri)
+                TYPE_PASSPORT -> passportImageView.setImageURI(uri)
+            }
+            Toast.makeText(this, "Снимок загружен", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Ошибка загрузки фото", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun uploadImageToServer(imageUri: Uri) {
+        val client = OkHttpClient()
+
+        // Создаем временный файл для загрузки
+        val tempFile = createTempFileFromUri(imageUri)
+        if (tempFile == null) {
+            Toast.makeText(this, "Ошибка: не удалось создать временный файл", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Указываем имя файла в URL
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+        val requestBody = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+
+        val request = Request.Builder()
+            .url("http://10.0.2.2:9090/upload/$fileName")
+            .put(requestBody)
+            .header("Content-Type", "image/jpeg")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@RegistationThird, "Ошибка загрузки фото: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val errorBody = response.body?.string()
+                if (response.isSuccessful) {
+                    // Успешная загрузка
+                    val imageUrl = "http://10.0.2.2:9090/upload/$fileName" // URL загруженного фото
+                    runOnUiThread {
+                        Toast.makeText(this@RegistationThird, "Фото успешно загружено", Toast.LENGTH_SHORT).show()
+
+                        // Сохраняем ссылку на фото в базе данных
+                        savePhotoUrlToDatabase(imageUrl)
+
+                        // Отображаем фото в аватарке
+                        when (currentPhotoType) {
+                            TYPE_AVATAR -> loadImageWithGlide(imageUrl, userPhoto)
+                            TYPE_PRAVA -> loadImageWithGlide(imageUrl, pravaImageView)
+                            TYPE_PASSPORT -> loadImageWithGlide(imageUrl, passportImageView)
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@RegistationThird,
+                            "Ошибка загрузки фото: ${response.code} - ${response.message}\n$errorBody",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun savePhotoUrlToDatabase(imageUrl: String) {
         if (userId != -1L) {
             userViewModel.getUserById(userId).observe(this) { user: User? ->
                 user?.let {
-                    val updatedUser = user.copy(photo_url = photoUri)
+                    val updatedUser = User(
+                        id = user.id,
+                        firstName = user.firstName,
+                        lastName = user.lastName,
+                        patronymic = user.patronymic,
+                        dateOfBirth = user.dateOfBirth,
+                        email = user.email,
+                        password = user.password,
+                        driverLicense = user.driverLicense,
+                        sex = user.sex,
+                        registration_date = user.registration_date,
+                        photo_url = imageUrl // Сохраняем ссылку на фото
+                    )
                     userViewModel.updateUser(updatedUser)
                 }
             }
         }
     }
 
-    private fun saveBitmapToInternalStorage(bitmap: Bitmap): String {
-        val filename = "avatar_${System.currentTimeMillis()}.jpg"
-        val file = File(filesDir, filename)
+    private fun loadImageWithGlide(imageUrl: String, imageView: ImageView) {
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.avatar) // Заглушка, пока загружается фото
+            .error(R.drawable.avatar) // Заглушка, если произошла ошибка
+            .into(imageView)
+    }
 
-        FileOutputStream(file).use { fos ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)
+    private fun createTempFileFromUri(uri: Uri): File? {
+        val context: Context = this
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        return try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                return null
+            }
+
+            val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir)
+            outputStream = FileOutputStream(tempFile)
+
+            val buffer = ByteArray(4 * 1024)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
+
+            tempFile
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        } finally {
+            inputStream?.close()
+            outputStream?.close()
         }
-
-        return file.absolutePath
     }
 
     @SuppressLint("DefaultLocale")

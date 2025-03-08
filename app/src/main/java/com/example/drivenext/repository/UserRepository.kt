@@ -1,7 +1,6 @@
 package com.example.drivenext.repository
 
 import androidx.lifecycle.LiveData
-import com.example.drivenext.data.AppDatabase
 import com.example.drivenext.data.User
 import com.example.drivenext.data.UserDao
 import kotlinx.coroutines.Dispatchers

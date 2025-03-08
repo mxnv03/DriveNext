@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.drivenext.viewmodel.UserViewModel
+import java.io.File
 
 class AccountActivity : BaseActivity() {
 
@@ -57,6 +60,8 @@ class AccountActivity : BaseActivity() {
                     if (!it.photo_url.isNullOrEmpty()) {
                         Glide.with(this)
                             .load(it.photo_url)
+                            .placeholder(R.drawable.settings_avatar)
+                            .error(R.drawable.settings_avatar)
                             .circleCrop() // Обрезаем в круг
                             .into(userAvatarImageView)
                     } else {
