@@ -29,10 +29,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         return userRepository.getUserById(userId)
     }
 
-    fun getPhotoByEmail(email: String): LiveData<String> {
-        return userRepository.getPhotoByEmail(email)
-    }
-
     fun updateUser(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.updateUser(user)
@@ -41,5 +37,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getUserByEmail(email: String): LiveData<User> {
         return userRepository.getUserByEmail(email)
+    }
+
+    suspend fun deleteUser(userId: Long): Int {
+        return withContext(Dispatchers.IO) {
+            userRepository.deleteUser(userId)
+        }
     }
 }

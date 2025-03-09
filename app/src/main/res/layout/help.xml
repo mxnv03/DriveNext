@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Верхняя панель с кнопкой "Назад" и заголовком "Помощь" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:padding="30dp">
+
+            <!-- Кнопка "Назад" -->
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/chevron_left" />
+
+            <!-- Заголовок "Помощь" -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Помощь"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- ScrollView для прокрутки содержимого -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Как начать пользоваться каршерингом -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="1. Как начать пользоваться каршерингом?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="1. Регистрация:\n- Скачайте приложение и зарегистрируйтесь, указав свои данные (имя, номер телефона, водительские права и т.д.).\n- Подтвердите свою личность, загрузив фото водительского удостоверения и паспорта.\n\n2. Поиск автомобиля:\n- Откройте карту в приложении, чтобы найти доступные автомобили рядом с вами.\n- Выберите подходящий автомобиль и забронируйте его.\n\n3. Начало поездки:\n- Подойдите к автомобилю и откройте его через приложение.\n- Проверьте состояние автомобиля перед началом поездки (сфотографируйте повреждения, если они есть).\n\n4. Завершение поездки:\n- Оставьте автомобиль в разрешенной зоне.\n- Завершите поездку в приложении и оплатите аренду."
+                    android:textSize="16sp" />
+
+                <!-- Как оплатить поездку -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="2. Как оплатить поездку?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Оплата происходит автоматически через приложение с помощью привязанной банковской карты. После завершения поездки сумма списывается с вашего счета. Вы получите чек на указанную электронную почту."
+                    android:textSize="16sp" />
+
+                <!-- Где можно оставить автомобиль -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="3. Где можно оставить автомобиль?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Автомобиль можно оставить в пределах разрешенной зоны, указанной на карте в приложении. Убедитесь, что автомобиль припаркован в соответствии с правилами дорожного движения."
+                    android:textSize="16sp" />
+
+                <!-- Что делать, если автомобиль поврежден -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="4. Что делать, если автомобиль поврежден?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Если вы заметили повреждения перед началом поездки, сфотографируйте их через приложение и сообщите в службу поддержки. Если повреждение произошло во время вашей поездки, немедленно свяжитесь с поддержкой."
+                    android:textSize="16sp" />
+
+                <!-- Что делать, если автомобиль не открывается -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="5. Что делать, если автомобиль не открывается?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="1. Убедитесь, что вы находитесь рядом с выбранным автомобилем.\n2. Проверьте подключение к интернету.\n3. Если проблема не решена, свяжитесь с поддержкой через приложение."
+                    android:textSize="16sp" />
+
+                <!-- Как отменить бронирование -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="6. Как отменить бронирование?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Вы можете отменить бронирование в приложении до начала поездки. Если вы отмените бронь слишком поздно, с вас может быть списана штрафная сумма."
+                    android:textSize="16sp" />
+
+                <!-- Что делать, если я забыл вещи в автомобиле -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="7. Что делать, если я забыл вещи в автомобиле?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Немедленно свяжитесь с поддержкой через приложение. Укажите номер автомобиля и описание забытых вещей. Мы постараемся помочь вам вернуть их как можно скорее."
+                    android:textSize="16sp" />
+
+                <!-- Как связаться с поддержкой -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="8. Как связаться с поддержкой?"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Вы можете написать в чат поддержки через приложение или позвонить по номеру: +7 (XXX) XXX-XX-XX (круглосуточно)."
+                    android:textSize="16sp" />
+
+                <!-- Часто задаваемые вопросы (FAQ) -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="9. Часто задаваемые вопросы (FAQ)"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="- Могу ли я взять автомобиль в аренду, если мне меньше 21 года?\nДа, минимальный возраст для аренды — 18 лет при наличии водительского удостоверения.\n\n- Что делать, если у автомобиля закончился заряд/бензин?\nНайдите ближайшую заправку/зарядную станцию и пополните запас. Сохраните чек, чтобы получить компенсацию.\n\n- Могу ли я взять автомобиль в другую страну?\nНет, автомобили можно использовать только в пределах указанной зоны."
+                    android:textSize="16sp" />
+
+                <!-- Политика конфиденциальности -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:paddingBottom="8dp"
+                    android:text="10. Политика конфиденциальности"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:paddingBottom="16dp"
+                    android:text="Мы заботимся о вашей конфиденциальности. Все ваши данные защищены и используются только для предоставления услуг каршеринга."
+                    android:textSize="16sp"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

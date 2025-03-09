@@ -18,9 +18,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     fun getUserByEmail(email: String): LiveData<User>
 
-    @Query("SELECT photo_url FROM users WHERE email = :email LIMIT 1")
-    fun getPhotoByEmail(email: String): LiveData<String>
-
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUserById(userId: Long): LiveData<User>
+
+    @Query("DELETE FROM users WHERE id = :userId")
+    fun deleteUser(userId: Long): Int
 }

@@ -1,65 +1,46 @@
 package com.example.drivenext
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.content.SharedPreferences
 import android.text.InputType
-import android.util.Patterns
-import android.view.View
+import androidx.lifecycle.Observer
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 
 import com.example.drivenext.viewmodel.UserViewModel
 import com.example.drivenext.data.User
 
-class RegistationFirst : BaseActivity() {
-    private lateinit var emailField: EditText
+class NewPassword : BaseActivity() {
     private lateinit var passwordField_1: EditText
     private lateinit var passwordField_2: EditText
     private lateinit var togglePasswordButton_1: ImageView
     private lateinit var togglePasswordButton_2: ImageView
-    private lateinit var nextButton: LinearLayout
+    private lateinit var doneButton: LinearLayout
     private lateinit var backButton: ImageView
-    private lateinit var errorText: TextView
-    private lateinit var checkBox: CheckBox
     private lateinit var userViewModel: UserViewModel
 
     private var isPasswordVisible_1 = false
     private var isPasswordVisible_2 = false
+    private var userId: Long = -1
 
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.registration_first_step)
+        setContentView(R.layout.new_password)
 
         // Инициализация элементов
-        emailField = findViewById(R.id.editTextText)
         backButton = findViewById(R.id.backButton)
         passwordField_1 = findViewById(R.id.editPassword1)
         passwordField_2 = findViewById(R.id.editPassword2)
         togglePasswordButton_1 = findViewById(R.id.imageView6)
         togglePasswordButton_2 = findViewById(R.id.imageView7)
-        nextButton = findViewById(R.id.button_layout)
-        errorText = findViewById(R.id.errorText)
-        checkBox = findViewById(R.id.checkBox2)
+        doneButton = findViewById(R.id.button_layout)
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-
-        fun validateEmail() {
-            val email = emailField.text.toString().trim()
-            if (email.isEmpty()) {
-                emailField.error = "Error"
-                errorText.visibility = View.VISIBLE
-                emailField.setBackgroundResource(R.drawable.rounded_button_red)
-            } else {
-                emailField.error = null
-                errorText.visibility = View.GONE
-                emailField.setBackgroundResource(R.drawable.rounded_button_white_login)
-            }
-        }
+        userId = sharedPreferences.getLong("user_id", -1)
 
         passwordField_1.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         passwordField_2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
@@ -90,67 +71,47 @@ class RegistationFirst : BaseActivity() {
             passwordField_2.setSelection(passwordField_2.text.length) // Ставим курсор в конец
         }
 
-        // Обработка нажатия на кнопку "Войти"
-        nextButton.setOnClickListener {
-            val email = emailField.text.toString()
+        doneButton.setOnClickListener {
             val password_1 = passwordField_1.text.toString()
             val password_2 = passwordField_2.text.toString()
 
-            validateEmail()
 
-            if (validateInput(email, password_1, password_2)) {
-                saveUserData(email)
-                // Создание пользователя
-                val user = User(
-                    firstName = "",
-                    lastName = "",
-                    patronymic = "",
-                    driverLicense = "",
-                    email = email,
-                    dateOfBirth = "",
-                    password = password_1,
-                    sex = "",
-                    registration_date = "",
-                    photo_url = "",
-                )
-                userViewModel.insertUser(user) { userId ->  // <-- Передаём callback
-                    val intent = Intent(this, RegistationSecond::class.java)
-                    intent.putExtra("USER_ID", userId) // Передаём userId
-                    val editor = sharedPreferences.edit()
-                    editor.putLong("user_id", userId)
-                    editor.apply()
-                    startActivity(intent)
-                    finish()
-                }
-                startActivity(Intent(this, RegistationSecond::class.java)) // Переход на главную страницу
+            if (validateInput(password_1, password_2)) {
+                savePasswordToDatabase(password_1)
+                startActivity(Intent(this, AccountActivity::class.java)) // Переход на главную страницу
                 finish()
             }
         }
         backButton.setOnClickListener {
-            startActivity(Intent(this, LoginAuthActivity::class.java))
+            startActivity(Intent(this, AccountActivity::class.java))
         }
     }
 
-    private fun validateInput(email: String, password1: String, password2: String): Boolean {
-        if (email.isEmpty()) {
-            emailField.error = "Error"
-            errorText.text = "Это поле является обязательным"
-            errorText.visibility = View.VISIBLE
-            emailField.setBackgroundResource(R.drawable.rounded_button_red)
-            return false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailField.error = "Error"
-            errorText.text = "Введите корректный email"
-            errorText.visibility = View.VISIBLE
-            emailField.setBackgroundResource(R.drawable.rounded_button_red)
-            return false
-        } else {
-            emailField.error = null
-            errorText.visibility = View.GONE
-            emailField.setBackgroundResource(R.drawable.rounded_button_white_login)
+    private fun savePasswordToDatabase(pass: String) {
+        if (userId != -1L) {
+            userViewModel.getUserById(userId).observe(this, Observer { user ->
+                user?.let {
+                    val updatedUser = User(
+                        id = user.id,
+                        firstName = user.firstName,
+                        lastName = user.lastName,
+                        patronymic = user.patronymic,
+                        dateOfBirth = user.dateOfBirth,
+                        email = user.email,
+                        password = pass,
+                        driverLicense = user.driverLicense,
+                        sex = user.sex,
+                        registration_date = user.registration_date,
+                        photo_url = user.photo_url
+                    )
+                    userViewModel.updateUser(updatedUser)
+                }
+            })
         }
+    }
 
-        if (email.isEmpty() || password1.isEmpty() || password1.isEmpty()) {
+    private fun validateInput(password1: String, password2: String): Boolean {
+        if (password1.isEmpty() || password1.isEmpty()) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -169,20 +130,6 @@ class RegistationFirst : BaseActivity() {
             Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
             return false
         }
-        if (!checkBox.isChecked) {
-            checkBox.setTextColor(Color.RED) // Подсветка ошибки
-            return false
-        } else {
-            checkBox.setTextColor(Color.parseColor("#1A1A1A"))
-        }
-
         return true
     }
-
-    private fun saveUserData(email: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString("email", email)
-        editor.apply()
-    }
-
 }

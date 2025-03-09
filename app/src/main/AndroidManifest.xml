@@ -34,6 +34,9 @@
         <activity android:name=".CarsActivity" android:exported="true"/>
         <activity android:name=".CarsSearch" android:exported="true"/>
         <activity android:name=".LoadingActivity" android:exported="true"/>
+        <activity android:name=".NewPassword" android:exported="true"/>
+        <activity android:name=".NewMail" android:exported="true"/>
+        <activity android:name=".HelpActivity" android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

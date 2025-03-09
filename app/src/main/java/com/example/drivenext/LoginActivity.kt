@@ -68,7 +68,7 @@ class LoginActivity : BaseActivity() {
                             val editor = sharedPreferences.edit()
                             editor.putLong("user_id", user.id.toLong())
                             editor.apply()
-                            startActivity(Intent(this, Congratulations::class.java)) // Переход на главный экран
+                            startActivity(Intent(this, SettingsActivity::class.java)) // Переход на главный экран
                             finish()
                         } else {
                             // Пароль неверный

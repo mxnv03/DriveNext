@@ -54,7 +54,7 @@
         app:layout_constraintStart_toStartOf="@+id/addAvatar"
         app:layout_constraintTop_toTopOf="@+id/addAvatar"
         app:layout_constraintVertical_bias="0.926"
-        app:srcCompat="@drawable/vector" />
+        app:srcCompat="@drawable/edit" />
 
     <TextView
         android:id="@+id/textView22"
@@ -97,6 +97,7 @@
 
         <!-- Контейнер: Почта -->
         <LinearLayout
+            android:id="@+id/changeMail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -117,6 +118,13 @@
                 android:fontFamily="@font/montserrat_light"
                 android:text="email@example.com"
                 android:textSize="12sp" />
+            <TextView
+                android:id="@+id/edd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="Поменять почту"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -127,6 +135,7 @@
 
         <!-- Контейнер: Пароль -->
         <LinearLayout
+            android:id="@+id/changePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -240,6 +249,28 @@
                 android:textColor="#666666"
                 android:textSize="12sp" />
 
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0" />
+
+        <LinearLayout
+            android:id="@+id/deleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="Удалить аккаунт"
+                android:textColor="#D32F2F"
+                android:textSize="14sp"
+                android:textStyle="bold" /> <!-- Красный текст -->
         </LinearLayout>
 
     </LinearLayout>

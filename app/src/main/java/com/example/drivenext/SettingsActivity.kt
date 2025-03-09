@@ -14,6 +14,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var userEmail: TextView
     private lateinit var avatar: ImageView
     private lateinit var navHome: ImageView
+    private lateinit var helpLayout: LinearLayout
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var userViewModel: UserViewModel
@@ -28,6 +29,7 @@ class SettingsActivity : BaseActivity() {
         userEmail = findViewById(R.id.userEmail)
         avatar = findViewById(R.id.avatar)
         navHome = findViewById(R.id.nav_home)
+        helpLayout = findViewById(R.id.helpLayout)
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
@@ -59,6 +61,10 @@ class SettingsActivity : BaseActivity() {
         // Переход в настройки аккаунта
         linearAccount.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
+        }
+
+        helpLayout.setOnClickListener {
+            startActivity(Intent(this, HelpActivity::class.java))
         }
 
         // Переход на страницу поиска
