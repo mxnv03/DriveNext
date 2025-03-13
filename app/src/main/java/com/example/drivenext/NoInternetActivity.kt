@@ -3,7 +3,6 @@ package com.example.drivenext
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast

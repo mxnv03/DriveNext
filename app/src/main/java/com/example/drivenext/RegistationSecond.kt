@@ -7,7 +7,6 @@ import android.app.DatePickerDialog
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.Observer
 import java.util.Calendar
 
 import com.example.drivenext.viewmodel.UserViewModel

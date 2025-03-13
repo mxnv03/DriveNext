@@ -29,7 +29,6 @@ import java.io.IOException
 import java.io.InputStream
 
 class AccountActivity : BaseActivity() {
-
     private lateinit var userNameTextView: TextView
     private lateinit var userEmailTextView: TextView
     private lateinit var userGenderTextView: TextView
